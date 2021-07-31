@@ -3,12 +3,12 @@ import { useState, useEffect } from 'react';
 
 const OPENWEATHERMAP_API_KEY = "d79a6949b5e537387ac71885a0ebc698";
 
-function WeatherItem({  }) {
-  const cityId = 546105;
+function WeatherItem({ cityId, selectedUnits }) {
+  // const cityId = 546105;
   const [currentCityData, setCurrentCityData] = useState({});
 
   function getCityWeather() {
-    return fetch(`https://api.openweathermap.org/data/2.5/weather?id=${cityId}&units=metric&appid=${OPENWEATHERMAP_API_KEY}`)
+    return fetch(`https://api.openweathermap.org/data/2.5/weather?id=${cityId}&units=${selectedUnits}&appid=${OPENWEATHERMAP_API_KEY}`)
       .then(response => {
         if (response.ok) {
           return response;
@@ -35,21 +35,40 @@ function WeatherItem({  }) {
       });
   }
 
+  function getTempUnit() {
+    if(selectedUnits === "standard") {
+      return <span>&#8490;</span>;
+    }
+    if(selectedUnits === "metric") {
+      return (
+        <span>&#8451;</span>
+        );
+    }
+    return <span>&#8457;</span>;
+  }
+
+  function getSpeedUnit() {
+    if(selectedUnits === "imperial") {
+      return "mph";
+    }
+    return "m/s";
+  }
+
   useEffect(()=>{
     if(cityId !== undefined) {
       getCityWeather()
     }
-  },[cityId]);
+  },[cityId, selectedUnits]);
 
   return (
     <div className="WeatherItem">
-      <p>City: {currentCityData.name}</p>
+      <h1>City: {currentCityData.name}</h1>
       <p>Country: {currentCityData.country}</p>
-      <p>Temperature: {currentCityData.temperature} &#8451;</p>
-      <p>Feels Like: {currentCityData.feelsLike} &#8451;</p>
+      <p>Temperature: {currentCityData.temperature} {getTempUnit()}</p>
+      <p>Feels Like: {currentCityData.feelsLike} {getTempUnit()}</p>
       <p>Pressure: {currentCityData.pressure}</p>
       <p>Humidity: {currentCityData.humidity}</p>
-      <p>Wind speed: {currentCityData.windSpeed}</p>
+      <p>Wind speed: {currentCityData.windSpeed} {getSpeedUnit()}</p>
       <p>Description: {currentCityData.description}</p>
     </div>
   );
