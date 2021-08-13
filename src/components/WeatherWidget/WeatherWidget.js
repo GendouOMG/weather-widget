@@ -1,21 +1,29 @@
 import './WeatherWidget.scss';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import WeatherList from './WeatherList';
 import WeatherSettings from './WeatherSettings';
 
 const OPENWEATHERMAP_API_KEY = "d79a6949b5e537387ac71885a0ebc698";
-const IPINFO_API_KEY = "9cc4b449f59c2b";
+// const IPINFO_API_KEY = "9cc4b449f59c2b";
 // const isCurrentCityOn = true;
 
 function WeatherWidget() {
   const [isLocalWeatherOn, setIsLocalWeatherOn] = useState(true);
   const [selectedUnits, setSelectedUnits] = useState("metric");
-  const [cityList, setCityList] = useState([{
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [cityList, setCityList] = useState([
+    {
     name: "Kolpino",
     country: "RU",
     id: 546105
-  }]);
+    },
+    {
+      name: "Moscow",
+      country: "RU",
+      id: 524901
+    }
+]);
 
 // eslint-disable-next-line
   function getUserLanguage() {
@@ -62,25 +70,41 @@ function WeatherWidget() {
     })
   }
 
+  function toggleMenu() {
+    setIsMenuOpen(prev => !prev);
+  }
+
+  // useEffect(()=> {
+  //   const body = document.querySelector('body');
+  //   body.style.overflow = isMenuOpen ? 'hidden' : 'auto'
+  // }, [isMenuOpen]);
+
   return (
     <div className="WeatherWidget">
-      <div>Widget</div>
+      <button className="WeatherWidget__open-menu-btn" onClick={toggleMenu}></button>
       <WeatherList
         cityList={cityList}
         isLocalWeatherOn={isLocalWeatherOn}
         selectedUnits={selectedUnits}
         getReverseGeolocation={getReverseGeolocation}
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
       />
-      <WeatherSettings
-        cityList={cityList}
-        removeCity={removeCity}
-        setCityList={setCityList}
-        isLocalWeatherOn={isLocalWeatherOn}
-        setIsLocalWeatherOn={setIsLocalWeatherOn}
-        selectedUnits={selectedUnits}
-        setSelectedUnits={setSelectedUnits}
-        getReverseGeolocation={getReverseGeolocation}
-      />
+
+      {isMenuOpen &&
+        <WeatherSettings
+          cityList={cityList}
+          setCityList={setCityList}
+          removeCity={removeCity}
+          isLocalWeatherOn={isLocalWeatherOn}
+          setIsLocalWeatherOn={setIsLocalWeatherOn}
+          selectedUnits={selectedUnits}
+          setSelectedUnits={setSelectedUnits}
+          getReverseGeolocation={getReverseGeolocation}
+          isMenuOpen={isMenuOpen}
+          setIsMenuOpen={setIsMenuOpen}
+        />
+      }
     </div>
   );
 }

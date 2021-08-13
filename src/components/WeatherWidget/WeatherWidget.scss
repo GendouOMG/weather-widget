@@ -1,0 +1,23 @@
+.WeatherWidget {
+  margin: 1em auto;
+  min-width: 220px;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  position: relative;
+
+  &__open-menu-btn {
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    right: 1.5em;
+    top: 0.5em;
+    z-index: 100;
+    border: none;
+    background-color: #FFFFFF;
+    background: center / contain no-repeat url("../../assets/images/openMenu.png");
+    width: 1.8em;
+    height: 1.8em;
+  }
+}

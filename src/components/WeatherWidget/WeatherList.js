@@ -2,10 +2,9 @@ import './WeatherList.scss';
 import { useState, useEffect } from 'react';
 import WeatherItem from './WeatherItem';
 
-const OPENWEATHERMAP_API_KEY = "d79a6949b5e537387ac71885a0ebc698";
 const IPINFO_API_KEY = "9cc4b449f59c2b";
 
-function WeatherList({ cityList, isLocalWeatherOn, selectedUnits, getReverseGeolocation }) {
+function WeatherList({ cityList, isLocalWeatherOn, selectedUnits, getReverseGeolocation, isMenuOpen }) {
   const [currentCityId, setCurrentCityId] = useState();
 
   function getCurrentCity() {
@@ -67,23 +66,6 @@ function WeatherList({ cityList, isLocalWeatherOn, selectedUnits, getReverseGeol
       });
   }
 
-  function TestT() {
-    return fetch(`http://api.openweathermap.org/data/2.5/weather?lat=51.5085&lon=-0.1257&appid=d79a6949b5e537387ac71885a0ebc698`)
-      .then(response => {
-        if (response.ok) {
-          return response;
-        }
-        return Promise.reject(Error('error'));
-      })
-      .then(data => data.json())
-      .then(data => {
-        console.log(data);
-      })
-      .catch((err) => {
-        console.error(err.message);
-      });
-  }
-
   useEffect(()=>{
     if(isLocalWeatherOn) {
       getCurrentCity();
@@ -91,13 +73,9 @@ function WeatherList({ cityList, isLocalWeatherOn, selectedUnits, getReverseGeol
   },[]);
 
   return (
-    <div className="WeatherList">
-      Тут Список:
-      {/* {cityList.length} */}
-      <button onClick={TestT}>Get</button>
-      {/* <button onClick={()=>0}>Take</button> */}
+    <div className="WeatherList" style={{ display: isMenuOpen ? 'none' : null }}>
       
-      {isLocalWeatherOn &&
+      {(isLocalWeatherOn && currentCityId !== undefined) &&
         <WeatherItem cityId={currentCityId} selectedUnits={selectedUnits} />
       }
 

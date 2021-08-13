@@ -54,6 +54,15 @@ function WeatherItem({ cityId, selectedUnits }) {
     return "m/s";
   }
 
+  function toWindTextualDescription(deg) {
+    if(deg === undefined) {
+      return "NA";
+    }
+    const compassSector = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW", "N"];
+    const indexOfCompassSector = (deg/22.5).toFixed(0);
+    return compassSector[indexOfCompassSector];
+  }
+
   useEffect(()=>{
     if(cityId !== undefined) {
       getCityWeather()
@@ -62,14 +71,23 @@ function WeatherItem({ cityId, selectedUnits }) {
 
   return (
     <div className="WeatherItem">
-      <h1>City: {currentCityData.name}</h1>
-      <p>Country: {currentCityData.country}</p>
-      <p>Temperature: {currentCityData.temperature} {getTempUnit()}</p>
-      <p>Feels Like: {currentCityData.feelsLike} {getTempUnit()}</p>
-      <p>Pressure: {currentCityData.pressure}</p>
-      <p>Humidity: {currentCityData.humidity}</p>
-      <p>Wind speed: {currentCityData.windSpeed} {getSpeedUnit()}</p>
-      <p>Description: {currentCityData.description}</p>
+      <h3 className="WeatherItem__city-name">{currentCityData.name}, {currentCityData.country}</h3>
+
+      <div className="WeatherItem__general">
+        <img className="WeatherItem__icon" src={`http://openweathermap.org/img/wn/${currentCityData.icon}@2x.png`} alt="WeatherIcon"></img>
+        <p className="WeatherItem__temperature">{currentCityData.temperature} {getTempUnit()}</p>
+      </div>
+
+        <p className="WeatherItem__description">
+          Feels Like {currentCityData.feelsLike} {getTempUnit()}, {currentCityData.description}
+        </p>
+
+      <div className="WeatherItem__extended">
+        <p className="WeatherItem__extended-info"> <span className="WeatherItem__extended-icon WeatherItem__extended-icon--wind-direction" style={{transform: `rotate(${180+currentCityData.windDirection}deg)`}}></span> {currentCityData.windSpeed} {getSpeedUnit()} {toWindTextualDescription(currentCityData.windDirection)}</p>
+        <p className="WeatherItem__extended-info"><span className="WeatherItem__extended-icon WeatherItem__extended-icon--pressure"></span> {currentCityData.pressure}hPa</p>
+        
+        <p className="WeatherItem__extended-info">Humidity: {currentCityData.humidity}%</p>
+      </div>
     </div>
   );
 }
